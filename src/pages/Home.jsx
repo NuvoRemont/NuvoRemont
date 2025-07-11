@@ -1,8 +1,31 @@
+import { useState } from "react";
 import { Card, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
-import { Phone, Hammer, Paintbrush, Home as HomeIcon, MessageCircle } from "lucide-react";
+import { Phone, Hammer, Paintbrush, Home as HomeIcon } from "lucide-react";
 
 export default function Home() {
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+
+    const data = new FormData(form);
+    const response = await fetch("https://formspree.io/f/mbjwgrzl", {
+      method: "POST",
+      body: data,
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (response.ok) {
+      setSuccess(true);
+      form.reset();
+      setTimeout(() => setSuccess(false), 5000); // сообщение исчезнет через 5 сек
+    }
+  };
+
   return (
     <main className="min-h-screen bg-white text-gray-900">
       <section className="bg-gray-100 py-20 px-4 text-center">
@@ -49,11 +72,16 @@ export default function Home() {
             className="text-sky-700 underline hover:text-sky-900"
           >Napisz na WhatsApp</a>
         </div>
-        <form className="max-w-xl mx-auto grid gap-4">
-          <input type="text" placeholder="Imię i nazwisko" className="border p-3 rounded-xl" />
-          <input type="email" placeholder="Adres e-mail" className="border p-3 rounded-xl" />
-          <textarea placeholder="Twoja wiadomość" rows={4} className="border p-3 rounded-xl" />
-          <Button className="w-full text-lg">Wyślij wiadomość</Button>
+        <form onSubmit={handleSubmit} className="max-w-xl mx-auto grid gap-4">
+          <input type="text" name="name" placeholder="Imię i nazwisko" required className="border p-3 rounded-xl" />
+          <input type="email" name="email" placeholder="Adres e-mail" required className="border p-3 rounded-xl" />
+          <textarea name="message" placeholder="Twoja wiadomość" rows={4} required className="border p-3 rounded-xl" />
+          <Button type="submit" className="w-full text-lg">Wyślij wiadomość</Button>
+          {success && (
+            <p className="text-green-600 font-semibold text-center">
+              ✅ Wiadomość została wysłana!
+            </p>
+          )}
         </form>
       </section>
 
