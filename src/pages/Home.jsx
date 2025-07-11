@@ -1,29 +1,14 @@
-import { useState } from "react";
 import { Card, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Phone, Hammer, Paintbrush, Home as HomeIcon } from "lucide-react";
+import { useState } from "react";
 
 export default function Home() {
-  const [success, setSuccess] = useState(false);
+  const [sent, setSent] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const form = e.target;
-
-    const data = new FormData(form);
-    const response = await fetch("https://formspree.io/f/mbjwgrzl", {
-      method: "POST",
-      body: data,
-      headers: {
-        Accept: "application/json",
-      },
-    });
-
-    if (response.ok) {
-      setSuccess(true);
-      form.reset();
-      setTimeout(() => setSuccess(false), 5000); // сообщение исчезнет через 5 сек
-    }
+    setSent(true);
   };
 
   return (
@@ -64,24 +49,12 @@ export default function Home() {
       <section className="bg-gray-50 py-16 px-6 text-center">
         <h2 className="text-3xl font-semibold mb-6">Kontakt</h2>
         <p className="text-lg mb-4">Masz pytania? Chcesz wycenę?</p>
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-4">
-          <Phone className="text-sky-600" />
-          <span className="text-xl font-medium">+48 123 456 789</span>
-          <a
-            href="https://wa.me/48123456789"
-            className="text-sky-700 underline hover:text-sky-900"
-          >Napisz na WhatsApp</a>
-        </div>
         <form onSubmit={handleSubmit} className="max-w-xl mx-auto grid gap-4">
-          <input type="text" name="name" placeholder="Imię i nazwisko" required className="border p-3 rounded-xl" />
-          <input type="email" name="email" placeholder="Adres e-mail" required className="border p-3 rounded-xl" />
-          <textarea name="message" placeholder="Twoja wiadomość" rows={4} required className="border p-3 rounded-xl" />
-          <Button type="submit" className="w-full text-lg">Wyślij wiadomość</Button>
-          {success && (
-            <p className="text-green-600 font-semibold text-center">
-              ✅ Wiadomość została wysłana!
-            </p>
-          )}
+          <input type="text" placeholder="Imię i nazwisko" className="border p-3 rounded-xl" required />
+          <input type="email" placeholder="Adres e-mail" className="border p-3 rounded-xl" required />
+          <textarea placeholder="Twoja wiadomość" rows={4} className="border p-3 rounded-xl" required />
+          <Button className="w-full text-lg" type="submit">Wyślij wiadomość</Button>
+          {sent && <p className="text-green-600 text-sm mt-2">✅ Wiadomość została wysłana!</p>}
         </form>
       </section>
 
